@@ -1,5 +1,5 @@
 {
-	"name" : "nyholm/dsn",
+	"name" : "mikeweb85/dsn",
 	"description" : "Parse your DSN",
 	"type" : "library",
 	"keywords" : [
@@ -9,11 +9,14 @@
 		"database",
 		"datasource"
 	],
-	"homepage" : "http://tnyholm.se",
+	"homepage" : "",
 	"license" : "MIT",
 	"authors" : [{
 			"name" : "Tobias Nyholm",
 			"email" : "tobias.nyholm@gmail.com"
+		}, {
+			"name" : "Mike Web",
+			"email" : "mweb@mikeweb.ninja"
 		}
 	],
 	"require" : {
@@ -24,7 +27,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"Nyholm\\" : "src/"
+			"MikeWeb\\" : "src/"
 		}
 	},
 	"scripts" : {
@@ -33,7 +36,6 @@
 	},
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "1.0-dev"
 		}
 	}
 }
