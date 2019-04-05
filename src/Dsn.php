@@ -1,6 +1,6 @@
 <?php
 
-namespace MikeWeb;
+namespace MikeWeb\Dsn;
 
 /**
  * Parse a DSN string to get its parts.
@@ -8,7 +8,7 @@ namespace MikeWeb;
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Mike Web <mweb@mikeweb.ninja>
  */
-final class DSN {
+final class Dsn {
     /**
      * @var string
      */
