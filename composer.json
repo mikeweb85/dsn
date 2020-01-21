@@ -9,7 +9,6 @@
 		"database",
 		"datasource"
 	],
-	"homepage" : "",
 	"license" : "MIT",
 	"authors" : [{
 			"name" : "Tobias Nyholm",
