@@ -7,6 +7,10 @@ namespace MikeWeb\Dsn;
  * 
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Mike Web <mweb@mikeweb.ninja>
+ * 
+ * multi protocol
+ * (!,\s)?(?P<_protocol>(?P<protocol>[\w\\\\]+):\/\/)(?P<host>[^?#\/:@,;\s]+)(?::(?P<port>\d+))?(?P<_path>(?P<path>\/[^?#,\s]*))?(?P<_query>\?(?P<query>[^#,\s]*))?
+ * 
  */
 final class Dsn {
     /**
@@ -189,19 +193,7 @@ final class Dsn {
         }
         
         if ( !empty($matches['query']) ) {
-            parse_str($matches['query'], $this->parameters);
-            
-            foreach ($this->parameters as $key=>$value) {
-                if ($value === 'true') {
-                    $this->parameters[$key] = true;
-                    
-                } elseif ($value === 'false') {
-                    $this->parameters[$key] = false;
-                    
-                } elseif ($value === 'null' || $value == '') {
-                    $this->parameters[$key] = null;
-                }
-            }
+            $this->parameters = $this->parseParameters($matches['query']);
         }
         
         if ( !empty($matches['fragment']) ) {
@@ -215,17 +207,48 @@ final class Dsn {
     }
 
     private function parseHosts($hostString) {
-        $hosts = [];
-        $matches = [];
-        preg_match_all('/(?P<host>[^?#\/:@,;]+)(?::(?P<port>\d+))?/mi', $hostString, $matches);
+        $hosts = $matches = [];
+        
+        //preg_match_all('/(?P<host>[^?#\/:@,;]+)(?::(?P<port>\d+))?/mi', $hostString, $matches);
+        preg_match_all('/(![,\s\(])?(?P<_protocol>(?P<protocol>[\w\\\\]+):\/\/)?(?P<host>[^?#\/:@,;\s\(\)]+)(?::(?P<port>\d+))?(?P<_query>\?(?P<query>[^#,\s\)]*))?/i', $hostString, $matches);
         
         foreach ($matches['host'] as $index => $match) {
-            $hosts[] = [
+            $hosts[$index] = [
                 'host'  => $match,
                 'port'  => !empty($matches['port'][$index]) ? (int) $matches['port'][$index] : null,
             ];
+            
+            if ( !empty($match['protocol'][$index]) ) {
+                $hosts[$index]['protocol'] = $match['protocol'][$index];
+            }
+            
+            if ( !empty($matches['query'][$index]) ) {
+                $hosts[$index]['parameters'] = $this->parseParameters($matches['query'][$index]);
+            }
         }
 
         $this->hosts = $hosts;
+    }
+    
+    private function parseParameters(string $queryString) {
+        $parameters = [];
+        
+        if ( !empty($queryString) ) {
+            parse_str($queryString, $parameters);
+            
+            foreach ($parameters as $key=>$value) {
+                if ($value === 'true') {
+                    $parameters[$key] = true;
+                    
+                } elseif ($value === 'false') {
+                    $parameters[$key] = false;
+                    
+                } elseif ($value === 'null' || $value == '') {
+                    $parameters[$key] = null;
+                }
+            }
+        }
+        
+        return $parameters;
     }
 }
